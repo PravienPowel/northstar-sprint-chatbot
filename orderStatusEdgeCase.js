@@ -66,7 +66,7 @@ function getResponseSafe(userInput) {
       return {
         reply: "I'd be happy to help! Please provide your order number.\n\n" +
                "It looks like ORD-XXXXX (5 digits) and you can find it in:\n" +
-[8/13/2026 11:50 AM] Manus: "• Your order confirmation email\n" +
+"• Your order confirmation email\n" +
                "• Your account order history\n\n" +
                "Example: ORD-78432",
         escalate: false
