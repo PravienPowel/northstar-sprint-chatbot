@@ -1,105 +1,120 @@
-// ============================================
 // Northstar Support Bot — CLI (Task #12)
 // Owner: Pravien Laban
 // ============================================
-
+// This is the terminal interface for the chatbot. It does not contain
+// the "brain" logic itself — that lives in Morris's order-status module
+// and Anne's returns/refunds module, imported below.
 //
-// UPDATED: now follows Morris's real interface —
-// getResponse(userInput) returns an object:
+// Both modules export getResponse(userInput) and return the same shape:
 //   { reply: string, escalate: boolean, needsOrderNumber: boolean }
-// instead of a plain string. Anne's refunds logic will follow
-// the same shape.
-
+// This shared shape is what makes it possible to plug both in here
+// using one consistent pattern.
+ 
 const readline = require("readline");
-
+ 
 // --------------------------------------------
-// Morris's order-status logic (Task #5)
-// Once his PR is merged, replace this placeholder with:
-//   const { getResponse: getOrderStatusResponse } = require("./orderStatus.js");
-// For now, using a placeholder that mimics his real return shape.
+// Import Morris's order-status logic (Task #5/#6)
+// File name must match exactly what's committed in the repo.
 // --------------------------------------------
-function getOrderStatusResponse(userInput) {
+let orderStatus;
+try {
+  orderStatus = require("./orderstatus.js");
+} catch (err) {
+  console.warn("[Warning] Could not load orderstatus.js — using placeholder. " +
+               "Check the filename matches what Morris committed.");
+  orderStatus = {
+    getResponse: (userInput) => ({
+      reply: "[PLACEHOLDER] Order-status reply for: " + userInput,
+      escalate: false,
+      needsOrderNumber: false,
+    }),
+  };
+}
+ 
+// --------------------------------------------
+// Import Anne's returns & refunds logic (Task #7/#8/#9)
+// File name must match exactly what's committed in the repo.
+// --------------------------------------------
+let returnsRefunds;
+try {
+  returnsRefunds = require("./returns-refunds.js");
+} catch (err) {
+  console.warn("[Warning] Could not load returns-refunds.js — using placeholder. " +
+               "Check the filename matches what Anne committed.");
+  returnsRefunds = {
+    getResponse: (userInput) => ({
+      reply: "[PLACEHOLDER] Refunds reply for: " + userInput,
+      escalate: false,
+      needsOrderNumber: false,
+    }),
+  };
+}
+ 
+// --------------------------------------------
+// Routing logic (Task #10 territory — simple version for now).
+// Decides which module should handle the message, based on keywords.
+// Topister may replace this with smarter routing later.
+// --------------------------------------------
+function getBotResponse(userInput) {
+  const text = userInput.toLowerCase();
+ 
+  const looksLikeOrder = text.includes("order") || text.includes("ship") ||
+                         text.includes("track") || text.includes("deliver");
+  const looksLikeReturn = text.includes("return") || text.includes("refund") ||
+                          text.includes("exchange");
+ 
+  if (looksLikeOrder && !looksLikeReturn) {
+    return orderStatus.getResponse(userInput);
+  }
+ 
+  if (looksLikeReturn && !looksLikeOrder) {
+    return returnsRefunds.getResponse(userInput);
+  }
+ 
+  // Ambiguous between the two categories, or matches neither —
+  // fall back to a generic clarifying message.
   return {
-    reply: "[PLACEHOLDER] Order-status reply for: " + userInput,
+    reply: "I can help with order status, or returns & refunds. " +
+           "Could you tell me which one you're asking about?",
     escalate: false,
     needsOrderNumber: false,
   };
 }
-
+ 
 // --------------------------------------------
-// PLACEHOLDER: Anne's returns & refunds logic (Task #8)
-// Replace this with Anne's real function once it's ready.
-// Anne has agreed to follow the same return shape as Morris:
-//   { reply: string, escalate: boolean, ... }
-// --------------------------------------------
-function getRefundsResponse(userInput) {
-  return {
-    reply: "[PLACEHOLDER] Refunds reply for: " + userInput,
-    escalate: false,
-  };
-}
-
-// --------------------------------------------
-// PLACEHOLDER: Topister's routing/integration logic (Task #10)
-// Simple keyword check for now — Topister will replace this with
-// the real routing logic once both functions above are ready.
-// Now returns the full object, not just a string.
-// --------------------------------------------
-function getBotResponse(userInput) {
-  const text = userInput.toLowerCase();
-
-  if (text.includes("order") || text.includes("ship") || text.includes("track")) {
-    return getOrderStatusResponse(userInput);
-  }
-
-  if (text.includes("return") || text.includes("refund")) {
-    return getRefundsResponse(userInput);
-  }
-
-  // Fallback for anything that doesn't match either category
-  return {
-    reply: "Sorry, I didn't understand that. Try asking about your order status, or a return/refund.",
-    escalate: false,
-  };
-}
-
-// --------------------------------------------
-// CLI loop — this is the actual Task #12 work.
-// Repeatedly asks for input, prints the bot's reply, until user exits.
-// Now reads the .reply field from the response object, and shows
-// a note if the bot flagged escalate: true.
+// CLI loop — the actual Task #12 deliverable.
+// Repeatedly reads terminal input, prints the bot's reply, until exit.
 // --------------------------------------------
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-
+ 
 console.log("=================================================");
 console.log(" Northstar Support Bot (CLI)");
 console.log(" Ask about your order status, or returns/refunds.");
 console.log(" Type 'exit' or 'quit' to stop.");
 console.log("=================================================");
-
+ 
 function askQuestion() {
   rl.question("\nYou: ", (userInput) => {
     const trimmed = userInput.trim().toLowerCase();
-
+ 
     if (trimmed === "exit" || trimmed === "quit") {
       console.log("Bot: Goodbye!");
       rl.close();
       return;
     }
-
+ 
     const response = getBotResponse(userInput);
     console.log("Bot: " + response.reply);
-
-    // If the bot logic flagged this as needing human handoff, show that too
+ 
     if (response.escalate) {
       console.log("[This conversation would be escalated to a human agent.]");
     }
-
+ 
     askQuestion(); // loop again
   });
 }
-
+ 
 askQuestion();
