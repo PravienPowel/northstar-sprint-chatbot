@@ -85,7 +85,7 @@ function askQuestion() {
     const trimmed = userInput.trim().toLowerCase();
 
     if (trimmed === "exit" || trimmed === "quit") {
-      console.log("Bot: Goodbye! 👋");
+      console.log("Bot: Goodbye!");
       rl.close();
       return;
     }
