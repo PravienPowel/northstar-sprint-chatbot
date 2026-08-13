@@ -6,10 +6,12 @@ Updated regularly through the sprint, finalized on Day 5.
  Commits
 | Date | Author | Commit Message |
 |------|--------|-----------------|
-| [12/08/2026] | Pravien Laban | Initial commit |
-| [12/08/2026] | Pravien Laban | docs: add team charter - establishes norms and conventions |
+| 12/08/2026 | Pravien Laban | Initial commit |
+| 12/08/2026 | Pravien Laban | docs: add team charter - establishes norms and conventions |
+| 13/08/2026 | Morris Njeru | feat: define order-status trigger phrases |
 
  Board Activity
 | Date | Task | Status Change | By |
 |------|------|----------------|-----|
-| [12/08/2026] | #1 Set up repo, invite team, initialize board | Todo → Done | Pravien Laban |
+| 12/08/2026 | #1 Set up repo, invite team, initialize board | Todo → Done | Pravien Laban |
+| 13/06/2026 | #4 Define intents/trigger phrases — Order status | Todo → Done | Morris Njeru |
