@@ -11,7 +11,8 @@
  * Task #8: Build happy-path response logic — Returns & Refunds
  * Definition of Done: Bot returns correct answer for one test question
  *
- * Note: Ambiguous-input clarification (Task #9) is not handled here yet.
+ * Task #9: Handle ambiguous input edge case — Returns & Refunds
+ * Definition of Done: Bot asks a clarifying question instead of failing
  */
 
 // ============ MOCK DATA (fake returns/refunds for demo) ============
@@ -37,10 +38,12 @@ const returns = {
  * Figures out what the customer is asking about.
  * Returns the intent name or "unknown" if it can't tell.
  *
- * Three intents (see returns-refunds-triggers.md):
+ * Four intents (see returns-refunds-triggers.md for the original three):
  *   - return_request: customer wants to send an item back
  *   - refund_status: customer is asking about a refund they're owed
  *   - out_of_scope: exchanges / wrong-item issues — hand off to a human
+ *   - clarification_needed: sounds return/refund/money-related, but not
+ *     specific enough to tell which (Task #9)
  */
 function detectIntent(message) {
   // Convert to lowercase so matching works regardless of caps
@@ -77,6 +80,17 @@ function detectIntent(message) {
     return "refund_status";
   }
 
+  // Ambiguous — sounds like it could be return/refund/money related,
+  // but not specific enough to tell which one (Task #9)
+  if (msg.includes("money") ||
+      msg.includes("payment") ||
+      msg.includes("charge") ||
+      msg.includes("problem with my order") ||
+      msg.includes("issue with my order") ||
+      msg.includes("help with my order")) {
+    return "clarification_needed";
+  }
+
   return "unknown";
 }
 
@@ -109,6 +123,16 @@ function getResponse(userInput) {
              "(exchanges and wrong-item issues aren't handled by this bot yet). " +
              "I'll connect you to a support agent.",
       escalate: true,
+      needsOrderNumber: false
+    };
+  }
+
+  // ============ CLARIFICATION NEEDED — ask instead of guessing ============
+  if (intent === "clarification_needed") {
+    return {
+      reply: "I can help with returns or refunds. Are you trying to return " +
+             "an item or check the status of a refund?",
+      escalate: false,
       needsOrderNumber: false
     };
   }
@@ -222,5 +246,12 @@ if (require.main === module) {
   const test5 = getResponse("What's the weather today?");
   console.log("Test 5: 'What's the weather today?' (unknown)");
   console.log("Reply:", test5.reply);
+  console.log("\n---\n");
+
+  // Test 6: Ambiguous input — should ask a clarifying question, not fail
+  const test6 = getResponse("I need help with my money");
+  console.log("Test 6: 'I need help with my money' (clarification_needed)");
+  console.log("Reply:", test6.reply);
+  console.log("Escalate:", test6.escalate);
   console.log("");
 }
