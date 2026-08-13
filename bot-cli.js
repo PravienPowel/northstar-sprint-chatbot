@@ -1,51 +1,73 @@
-
+// ============================================
 // Northstar Support Bot — CLI (Task #12)
 // Owner: Pravien Laban
+// ============================================
+
+//
+// UPDATED: now follows Morris's real interface —
+// getResponse(userInput) returns an object:
+//   { reply: string, escalate: boolean, needsOrderNumber: boolean }
+// instead of a plain string. Anne's refunds logic will follow
+// the same shape.
 
 const readline = require("readline");
 
 // --------------------------------------------
-// PLACEHOLDER: Morris's order-status logic (Task #5)
-// Replace this with Morris's real function once it's ready.
-// It should take the user's text and return a reply string.
+// Morris's order-status logic (Task #5)
+// Once his PR is merged, replace this placeholder with:
+//   const { getResponse: getOrderStatusResponse } = require("./orderStatus.js");
+// For now, using a placeholder that mimics his real return shape.
 // --------------------------------------------
-function getOrderStatusReply(userInput) {
-  return "[PLACEHOLDER] Order-status reply for: " + userInput;
+function getOrderStatusResponse(userInput) {
+  return {
+    reply: "[PLACEHOLDER] Order-status reply for: " + userInput,
+    escalate: false,
+    needsOrderNumber: false,
+  };
 }
 
 // --------------------------------------------
 // PLACEHOLDER: Anne's returns & refunds logic (Task #8)
 // Replace this with Anne's real function once it's ready.
-// Same shape: takes user's text, returns a reply string.
+// Anne has agreed to follow the same return shape as Morris:
+//   { reply: string, escalate: boolean, ... }
 // --------------------------------------------
-function getRefundsReply(userInput) {
-  return "[PLACEHOLDER] Refunds reply for: " + userInput;
+function getRefundsResponse(userInput) {
+  return {
+    reply: "[PLACEHOLDER] Refunds reply for: " + userInput,
+    escalate: false,
+  };
 }
 
 // --------------------------------------------
 // PLACEHOLDER: Topister's routing/integration logic (Task #10)
-// For now, this does a very simple keyword check to decide
-// which category to call. Topister will replace this with
+// Simple keyword check for now — Topister will replace this with
 // the real routing logic once both functions above are ready.
+// Now returns the full object, not just a string.
 // --------------------------------------------
-function getBotReply(userInput) {
+function getBotResponse(userInput) {
   const text = userInput.toLowerCase();
 
   if (text.includes("order") || text.includes("ship") || text.includes("track")) {
-    return getOrderStatusReply(userInput);
+    return getOrderStatusResponse(userInput);
   }
 
   if (text.includes("return") || text.includes("refund")) {
-    return getRefundsReply(userInput);
+    return getRefundsResponse(userInput);
   }
 
   // Fallback for anything that doesn't match either category
-  return "Sorry, I didn't understand that. Try asking about your order status, or a return/refund.";
+  return {
+    reply: "Sorry, I didn't understand that. Try asking about your order status, or a return/refund.",
+    escalate: false,
+  };
 }
 
 // --------------------------------------------
 // CLI loop — this is the actual Task #12 work.
 // Repeatedly asks for input, prints the bot's reply, until user exits.
+// Now reads the .reply field from the response object, and shows
+// a note if the bot flagged escalate: true.
 // --------------------------------------------
 const rl = readline.createInterface({
   input: process.stdin,
@@ -63,13 +85,18 @@ function askQuestion() {
     const trimmed = userInput.trim().toLowerCase();
 
     if (trimmed === "exit" || trimmed === "quit") {
-      console.log("Bot: Goodbye!");
+      console.log("Bot: Goodbye! 👋");
       rl.close();
       return;
     }
 
-    const reply = getBotReply(userInput);
-    console.log("Bot: " + reply);
+    const response = getBotResponse(userInput);
+    console.log("Bot: " + response.reply);
+
+    // If the bot logic flagged this as needing human handoff, show that too
+    if (response.escalate) {
+      console.log("[This conversation would be escalated to a human agent.]");
+    }
 
     askQuestion(); // loop again
   });
