@@ -6,7 +6,7 @@ Updated regularly through the sprint, finalized on Day 5.
 ## Commits
 | Date | Author | Commit Message |
 |------|--------|-----------------|
-| Aug 13, 2026 | Pravien Laban | Initial commit |
+| Aug 12, 2026 | Pravien Laban | Initial commit |
 | Aug 13, 2026 | Pravien Laban | docs: add team charter - establishes norms and conventions |
 | Aug 13, 2026 | Morris Njeru | feat: define order-status trigger phrases |
 | Aug 13, 2026 | Morris Njeru | feat: add order-status happy-path response logic |
@@ -19,7 +19,7 @@ Updated regularly through the sprint, finalized on Day 5.
 ## Board Activity
 | Date | Task | Status Change | By |
 |------|------|----------------|-----|
-| Aug 13, 2026 | #1 Set up repo, invite team, initialize board | Todo → Done | Pravien Laban |
+| Aug 12, 2026 | #1 Set up repo, invite team, initialize board | Todo → Done | Pravien Laban |
 | Aug 13, 2026 | #4 Define intents/trigger phrases — Order status | Todo → Done | Morris Njeru |
 | Aug 13, 2026 | #5 Build happy-path response logic — Order status | Todo → Done | Morris Njeru |
 | Aug 13, 2026 | #6 Handle "no order found" edge case — Order status | Todo → Done | Morris Njeru |
