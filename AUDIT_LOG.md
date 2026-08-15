@@ -67,3 +67,12 @@ Full system tested live via `node bot-cli.js` after all modules were merged toge
 - Clean exit via 'exit'/'quit' command
 
 All confirmed working as an integrated system, not just as individually reviewed modules.
+
+## Post-cleanup regression & fix
+On Aug 15, a fresh git clone (used to verify the repo works for anyone 
+cloning it new, not just the original test machine) revealed 
+orderStatusEdgeCase.js had been silently truncated during an earlier edit, 
+causing a syntax error and silent fallback to placeholder logic. Fixed by 
+rewriting the file completely; re-verified the full system end-to-end on 
+the fresh clone afterward, confirming all core flows (order lookup, refund 
+lookup, routing, escalation) work correctly for a first-time clone.
