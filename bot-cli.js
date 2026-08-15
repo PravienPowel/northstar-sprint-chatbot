@@ -1,3 +1,4 @@
+// ============================================
 // Northstar Support Bot — CLI (Task #12)
 // Owner: Pravien Laban
 // ============================================
@@ -5,16 +6,25 @@
 // the "brain" logic itself — that lives in Morris's order-status module
 // and Anne's returns/refunds module, imported below.
 //
-// Both modules export getResponse(userInput) and return the same shape:
-//   { reply: string, escalate: boolean, needsOrderNumber: boolean }
-// This shared shape is what makes it possible to plug both in here
-// using one consistent pattern.
- 
+// BotResponse shape (enforced by all modules, see makeResponse below):
+//   {
+//     reply: string,            // required
+//     escalate: boolean,        // required
+//     needsOrderNumber: boolean // always present, defaults to false
+//   }
+
 const readline = require("readline");
- 
+
+// --------------------------------------------
+// Helper: builds a response that always conforms to the shared shape,
+// even if a module only supplies some of the fields.
+// --------------------------------------------
+function makeResponse({ reply, escalate = false, needsOrderNumber = false }) {
+  return { reply, escalate, needsOrderNumber };
+}
+
 // --------------------------------------------
 // Import Morris's order-status logic (Task #5/#6)
-// File name must match exactly what's committed in the repo.
 // --------------------------------------------
 let orderStatus;
 try {
@@ -23,17 +33,13 @@ try {
   console.warn("[Warning] Could not load orderstatus.js — using placeholder. " +
                "Check the filename matches what Morris committed.");
   orderStatus = {
-    getResponse: (userInput) => ({
-      reply: "[PLACEHOLDER] Order-status reply for: " + userInput,
-      escalate: false,
-      needsOrderNumber: false,
-    }),
+    getResponse: (userInput) =>
+      makeResponse({ reply: "[PLACEHOLDER] Order-status reply for: " + userInput }),
   };
 }
- 
+
 // --------------------------------------------
 // Import Anne's returns & refunds logic (Task #7/#8/#9)
-// File name must match exactly what's committed in the repo.
 // --------------------------------------------
 let returnsRefunds;
 try {
@@ -42,79 +48,71 @@ try {
   console.warn("[Warning] Could not load returns-refunds.js — using placeholder. " +
                "Check the filename matches what Anne committed.");
   returnsRefunds = {
-    getResponse: (userInput) => ({
-      reply: "[PLACEHOLDER] Refunds reply for: " + userInput,
-      escalate: false,
-      needsOrderNumber: false,
-    }),
+    getResponse: (userInput) =>
+      makeResponse({ reply: "[PLACEHOLDER] Refunds reply for: " + userInput }),
   };
 }
- 
+
 // --------------------------------------------
 // Routing logic (Task #10 territory — simple version for now).
-// Decides which module should handle the message, based on keywords.
-// Topister may replace this with smarter routing later.
+// Uses word-boundary regex instead of plain substring matching,
+// so "border", "shipwreck", etc. don't falsely match.
 // --------------------------------------------
+const ORDER_PATTERN = /\b(order|ship|shipped|shipping|track|tracking|deliver|delivery)\b/i;
+const RETURN_PATTERN = /\b(return|refund|exchange)\b/i;
+
 function getBotResponse(userInput) {
-  const text = userInput.toLowerCase();
- 
-  const looksLikeOrder = text.includes("order") || text.includes("ship") ||
-                         text.includes("track") || text.includes("deliver");
-  const looksLikeReturn = text.includes("return") || text.includes("refund") ||
-                          text.includes("exchange");
- 
+  const looksLikeOrder = ORDER_PATTERN.test(userInput);
+  const looksLikeReturn = RETURN_PATTERN.test(userInput);
+
   if (looksLikeOrder && !looksLikeReturn) {
     return orderStatus.getResponse(userInput);
   }
- 
+
   if (looksLikeReturn && !looksLikeOrder) {
     return returnsRefunds.getResponse(userInput);
   }
- 
-  // Ambiguous between the two categories, or matches neither —
-  // fall back to a generic clarifying message.
-  return {
+
+  // Ambiguous (matches both or neither) — single, clear fallback message.
+  return makeResponse({
     reply: "I can help with order status, or returns & refunds. " +
            "Could you tell me which one you're asking about?",
-    escalate: false,
-    needsOrderNumber: false,
-  };
+  });
 }
- 
+
 // --------------------------------------------
 // CLI loop — the actual Task #12 deliverable.
-// Repeatedly reads terminal input, prints the bot's reply, until exit.
 // --------------------------------------------
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
- 
+
 console.log("=================================================");
 console.log(" Northstar Support Bot (CLI)");
 console.log(" Ask about your order status, or returns/refunds.");
 console.log(" Type 'exit' or 'quit' to stop.");
 console.log("=================================================");
- 
+
 function askQuestion() {
   rl.question("\nYou: ", (userInput) => {
     const trimmed = userInput.trim().toLowerCase();
- 
+
     if (trimmed === "exit" || trimmed === "quit") {
       console.log("Bot: Goodbye!");
       rl.close();
       return;
     }
- 
+
     const response = getBotResponse(userInput);
     console.log("Bot: " + response.reply);
- 
+
     if (response.escalate) {
       console.log("[This conversation would be escalated to a human agent.]");
     }
- 
-    askQuestion(); // loop again
+
+    askQuestion();
   });
 }
- 
+
 askQuestion();
