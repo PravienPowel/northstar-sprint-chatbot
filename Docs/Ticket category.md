@@ -23,7 +23,7 @@ Question variant	What the answer must include	In/Out of scope
 “When will it be back in stock?”	Requires a restock-date field we don't have.	Out of scope for MVP
 “Can you notify me when it's back?”	Requires storing a customer's contact info — a write action, not a lookup.	Out of scope — stretch goal for post-MVP
 4. Shared Rules Across All 3 Categories
-•	Every answer must state a concrete fact (a date, a yes/no, a status) printed as plain text to the terminal — never a vague reassurance like “your order is on its way” with no specifics, and never a raw Python object or error trace.
+•	- Every answer must state a concrete fact (a date, a yes/no, a status) printed as plain text to the terminal — never a vague reassurance like "your order is on its way" with no specifics, and never a raw object or error trace.
 •	If the input (order ID, email, item) doesn't match any record, say so plainly and explain the limitation (mock dataset), rather than crashing or failing silently.
 •	Per the brief, the MVP only needs 2 of the 3 categories fully working end-to-end — Order Status and Returns & Refunds are the two committed to for this sprint; Stock Availability is a stretch goal if time allows.
 •	Anything marked “Out of scope” above goes in the go-live note's known-limitations section, not silently dropped.
