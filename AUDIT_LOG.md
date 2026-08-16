@@ -3,21 +3,22 @@
 This log tracks team activity: commits, PRs, and board movement, mapped to tasks.
 
 ## Pull Requests (merged)
-| PR # | Title | Author | Task(s) |
-|------|-------|--------|---------|
-| #16 | feat: define order-status trigger phrases | Morris Njeru | #4 |
-| #17 | feat: add order-status happy-path logic | Morris Njeru | #5 |
-| #18 | feat: add graceful fallback for order-not-found edge case | Morris Njeru | #6 |
-| #19 | Create returns-refunds-triggers.md | Anne Mugunye | #7 |
-| #20 | Task 7-8: Add Returns & Refunds intents and response logic | Anne Mugunye | #7, #8 |
-| #21 | Task #9: Handle ambiguous input edge case - Returns & Refunds | Anne Mugunye | #9 |
-| #22 | Feature/conversation UI | Pravien Laban | #12 |
-| #23 | feat: integrate order-status handler and ticket routing | Topister Were | #10, #11 |
-| #24 | Fix: sync docs with CLI menu (remove unwired stock-availability option) | Kibet Forbes | #13 |
-| #27 | Docs/chatbot framework | Kibet Forbes | #2 |
-| #29 | Add ticket category definitions to documentation | Kibet Forbes | #3 |
-| #30 | fix: wire orderStatusEdgeCase.js into CLI - activates task #6 safety net | Pravien Laban | #6, #12 |
-| #31 | Chore/cleanup unused files | Pravien Laban | repo hygiene |
+| PR # | Title | Author | Task(s) | Merged (timestamp) |
+|------|-------|--------|---------|---------------------|
+| #16 | feat: define order-status trigger phrases | Morris Njeru | #4 | 2026-08-13 18:39:13 +0300 |
+| #17 | feat: add order-status happy-path logic | Morris Njeru | #5 | 2026-08-13 19:18:48 +0300 |
+| #18 | feat: add graceful fallback for order-not-found edge case | Morris Njeru | #6 | 2026-08-13 19:14:54 +0300 |
+| #19 | Create returns-refunds-triggers.md | Anne Mugunye | #7 | 2026-08-13 05:21:25 -0700 |
+| #20 | Task 7-8: Add Returns & Refunds intents and response logic | Anne Mugunye | #7, #8 | 2026-08-13 07:55:20 -0700 |
+| #21 | Task #9: Handle ambiguous input edge case - Returns & Refunds | Anne Mugunye | #9 | 2026-08-13 11:11:37 -0700 |
+| #22 | Feature/conversation UI | Pravien Laban | #12 | 2026-08-15 09:17:59 +0300 |
+| #23 | feat: integrate order-status handler and ticket routing | Topister Were | #10, #11 | 2026-08-15 11:20:00 +0300 |
+| #24 | Fix: sync docs with CLI menu (remove unwired stock-availability option) | Kibet Forbes | #13 | 2026-08-14 09:31:41 +0300 |
+| #27 | Docs/chatbot framework | Kibet Forbes | #2 | 2026-08-15 10:29:19 +0300 |
+| #28 | Docs/Go-live-readiness | Kibet Forbes | #13 | 2026-08-15 10:30:15 +0300 |
+| #29 | Ticket category definitions to documentation | Kibet Forbes | #3 | 2026-08-15 10:29:34 +0300 |
+| #30 | fix: wire orderStatusEdgeCase.js into CLI - activates task #6 safety net | Pravien Laban | #6, #12 | 2026-08-15 21:56:28 +0300 |
+| #31 | Chore/cleanup unused files | Pravien Laban | repo hygiene | 2026-08-15 21:50:29 +0300 |
 
 Note: PRs #25 and #26 (Kibet, early go-live/framework drafts) were closed without merging — superseded by corrected versions after review caught scope and accuracy issues (see Review Notes below).
 
